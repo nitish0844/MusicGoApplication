@@ -8,13 +8,27 @@ import {name as appName} from './app.json';
 
 import TrackPlayer from 'react-native-track-player';
 
-export const onRegisterPlayback = async () => {
-  TrackPlayer.addEventListener('remote-play', () => TrackPlayer.play());
+export const onRegisterPlayback = async function () {
+  TrackPlayer.addEventListener('remote-play', () => {
+    TrackPlayer.play();
+  });
 
-  TrackPlayer.addEventListener('remote-pause', () => TrackPlayer.pause());
+  TrackPlayer.addEventListener('remote-pause', () => {
+    TrackPlayer.pause();
+  });
 
-  TrackPlayer.addEventListener('remote-stop', () => TrackPlayer.destroy());
+  TrackPlayer.addEventListener('remote-seek', ({position}) => {
+    TrackPlayer.seekTo(position);
+  });
 };
+
+// export const onRegisterPlayback = async () => {
+//   TrackPlayer.addEventListener('remote-play', () => TrackPlayer.play());
+
+//   TrackPlayer.addEventListener('remote-pause', () => TrackPlayer.pause());
+
+//   TrackPlayer.addEventListener('remote-stop', () => TrackPlayer.destroy());
+// };
 
 AppRegistry.registerComponent(appName, () => App);
 TrackPlayer.registerPlaybackService(() => onRegisterPlayback);

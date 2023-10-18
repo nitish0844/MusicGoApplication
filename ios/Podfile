@@ -20,6 +20,8 @@ target 'musicgoapplication' do
 
   pod 'RNPermissions', :path => '../node_modules/react-native-permissions'
 
+  pod 'react-native-track-player', :path => '../node_modules/react-native-track-player'
+
   target 'musicgoapplicationTests' do
     inherit! :complete
     # Pods for testing
