@@ -1,13 +1,20 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, Button, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  Button,
+  StyleSheet,
+  TouchableOpacity,
+  LogBox,
+} from 'react-native';
 import TrackPlayer from 'react-native-track-player';
 import {useRoute} from '@react-navigation/native';
 import StarRating from './StarRating';
 import MusicListHeader from './MusicListHeader';
 
+LogBox.ignoreAllLogs();
+
 const MusicPlayer = () => {
-  const [trackTitle, setTrackTitle] = useState('');
-  const [trackArtist, setTrackArtist] = useState('');
   const route = useRoute();
   const {id, rating, songUrl} = route.params;
 
@@ -29,10 +36,6 @@ const MusicPlayer = () => {
         artist: 'Track Artist',
         // artwork: require('track.png'),
       });
-
-      // Set track information
-      setTrackTitle('Track Title');
-      setTrackArtist('Track Artist');
 
       // Start playing it
       await TrackPlayer.play();
