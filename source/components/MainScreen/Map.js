@@ -6,6 +6,8 @@ import {
   Platform,
   useColorScheme,
   ActivityIndicator,
+  Text,
+  Image,
 } from 'react-native';
 import MapView, {Marker, Callout} from 'react-native-maps';
 import {check, PERMISSIONS, request, RESULTS} from 'react-native-permissions';
@@ -17,11 +19,21 @@ import {
   AlertNotificationRoot,
   Toast,
 } from 'react-native-alert-notification';
+import {useNavigation} from '@react-navigation/native';
+
+import {MusicData} from '../../assets/Data/Data';
+import StarRating from '../MusicTracker/StarRating';
+
+import haversineDistance from 'haversine-distance';
 
 const LATITUDE_DELTA = 0.0922;
 const LONGITUDE_DELTA = 0.0421;
 
+const MarkerUrl =
+  'https://firebasestorage.googleapis.com/v0/b/songtrax-e5491.appspot.com/o/png-clipart-fashion-red-headphone-music-cds-fashion-red-removebg-preview.png?alt=media&token=28482076-d067-4a01-96e5-4fcdcde9789d';
+
 const Map = () => {
+  const navigation = useNavigation();
   const [region, setRegion] = useState({
     latitude: 0,
     longitude: 0,
@@ -29,10 +41,16 @@ const Map = () => {
     longitudeDelta: LONGITUDE_DELTA,
   });
 
-  const [loading, setLoading] = useState(true);
-  const [requestPermissionAgain, setRequestPermissionAgain] = useState(false);
+  const userLocation = {
+    latitude: region.latitude,
+    longitude: region.longitude,
+  };
 
-  const colorScheme = useColorScheme(); // Get the current system appearance mode
+  const radius = 700; //1000 meters raduis
+
+  const [loading, setLoading] = useState(true);
+
+  const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
 
   const normalMapStyle = [];
@@ -78,7 +96,7 @@ const Map = () => {
             error => {
               console.error(error);
               setLoading(false);
-              locationGettingError(); // Display location error notification
+              locationGettingError();
             },
             {enableHighAccuracy: true, timeout: 30000, maximumAge: 10000},
           );
@@ -108,7 +126,7 @@ const Map = () => {
             );
           } else {
             setLoading(false);
-            PermissionError(); // Display permission error notification
+            PermissionError();
           }
         }
       } catch (err) {
@@ -178,7 +196,34 @@ const Map = () => {
 
   useEffect(() => {
     requestLocationPermission();
+
+    const watchId = Geolocation.watchPosition(
+      position => {
+        const {latitude, longitude} = position.coords;
+        setRegion({
+          latitude,
+          longitude,
+          latitudeDelta: LATITUDE_DELTA,
+          longitudeDelta: LONGITUDE_DELTA,
+        });
+      },
+      error => {
+        console.error(error);
+        locationGettingError();
+      },
+      {enableHighAccuracy: true, timeout: 30000, maximumAge: 10000},
+    );
+
+    return () => {
+      // Stop watching the user's location when the component unmounts
+      Geolocation.clearWatch(watchId);
+    };
   }, []);
+
+  const handleSongPress = (id, rating, songUrl) => {
+    // Navigate to the MusicPlayer page and pass the song details as params
+    navigation.navigate('MusicPlayer', {id, rating, songUrl});
+  };
 
   return (
     <AlertNotificationRoot>
@@ -200,7 +245,50 @@ const Map = () => {
               region={region}
               showsUserLocation={true}
               customMapStyle={isDarkMode ? DarkMapStyle : normalMapStyle}>
-              <Marker coordinate={region} pinColor="red" />
+              {MusicData.map((musicItem, index) => {
+                // Calculate the distance between the user's location and the marker
+                const markerLocation = {
+                  latitude: parseFloat(musicItem.latitude),
+                  longitude: parseFloat(musicItem.longitude),
+                };
+
+                const distance = haversineDistance(
+                  userLocation,
+                  markerLocation,
+                  {
+                    unit: 'meter',
+                  },
+                );
+
+                if (distance <= radius) {
+                  return (
+                    <Marker
+                      key={index}
+                      coordinate={markerLocation}
+                      pinColor="red">
+                      <Image
+                        source={{uri: MarkerUrl}}
+                        style={styles.customMarker}
+                      />
+                      <Callout
+                        onPress={() =>
+                          handleSongPress(
+                            musicItem.songID,
+                            musicItem.rating,
+                            musicItem.song,
+                          )
+                        }>
+                        <Text style={{textAlign: 'center'}}>
+                          {musicItem.date}
+                        </Text>
+                        <StarRating rating={musicItem.rating} />
+                      </Callout>
+                    </Marker>
+                  );
+                } else {
+                  return null; // Do not render the marker
+                }
+              })}
             </MapView>
           )}
         </View>
@@ -231,6 +319,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  customMarker: {
+    width: 40, // Customize the width of the marker
+    height: 40, // Customize the height of the marker
   },
 });
 

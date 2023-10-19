@@ -11,6 +11,7 @@ import TrackPlayer from 'react-native-track-player';
 import {useRoute} from '@react-navigation/native';
 import StarRating from './StarRating';
 import MusicListHeader from './MusicListHeader';
+import PlayerCurrentLocation from './PlayerCurrentLocation';
 
 LogBox.ignoreAllLogs();
 
@@ -18,7 +19,6 @@ const MusicPlayer = () => {
   const route = useRoute();
   const {id, rating, songUrl} = route.params;
 
-  // Initialize TrackPlayer when the component mounts
   useEffect(() => {
     async function initializeTrackPlayer() {
       // const isPlayerInitialized = await TrackPlayer.isInitialized();
@@ -77,6 +77,9 @@ const MusicPlayer = () => {
           <Text style={styles.ButtonText}>Play Music</Text>
         </TouchableOpacity>
         <StarRating rating={rating} />
+      </View>
+      <View style={{flex: 1}}>
+        <PlayerCurrentLocation />
       </View>
     </View>
   );
