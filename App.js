@@ -1,7 +1,5 @@
 import React, {useEffect} from 'react';
 import {Text, View, StyleSheet, useColorScheme} from 'react-native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Feather from 'react-native-vector-icons/Feather';
 import RNBootSplash from 'react-native-bootsplash';
 
 import {NavigationContainer} from '@react-navigation/native';
@@ -18,7 +16,6 @@ import MainScreen from './source/screens/MainScreen';
 import ProfileScreen from './source/screens/ProfileScreen';
 import MusicTrackerScreen from './source/screens/MusicTrackerScreen';
 import MusicPlayer from './source/components/MusicTracker/MusicPlayer';
-import {Dark, Light} from './source/components/Theme/Colors';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
