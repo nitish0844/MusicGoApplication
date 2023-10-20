@@ -2,6 +2,7 @@ import React, {useEffect} from 'react';
 import {Text, View, StyleSheet, useColorScheme} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Feather from 'react-native-vector-icons/Feather';
+import RNBootSplash from 'react-native-bootsplash';
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
@@ -42,49 +43,50 @@ const App = () => {
       return (
         <Tab.Navigator
           initialRouteName="MainScreen"
-          screenOptions={({route}) => ({
-            tabBarShowLabel: false, // Hide default tab labels
-            headerTitleStyle: {fontWeight: '800'},
-            tabBarActiveTintColor: '#800080',
-            tabBarInactiveTintColor: isDarkMode ? '#fff' : '#000',
-            tabBarLabelStyle: {
-              fontSize: 12,
-              fontWeight: '700',
-            },
-            tabBarStyle: {
-              backgroundColor: isDarkMode
-                ? Dark.BottomTabColor
-                : Light.BottomTabColor,
-              borderTopColor: '#1D1D1D',
-              height: 55,
-            },
-            tabBarIcon: ({focused, color, size}) => {
-              let iconComponent;
-              switch (route.name) {
-                case 'MainScreen':
-                  iconComponent = (
-                    <MaterialCommunityIcons
-                      name="map-outline"
-                      size={size}
-                      color={color}
-                    />
-                  );
-                  break;
-                case 'ProfileScreen':
-                  iconComponent = (
-                    <Feather name="user" size={size} color={color} />
-                  );
-                  break;
-                case 'MusicTrackerScreen':
-                  iconComponent = (
-                    <CustomTabLabel focused={focused} color={color} />
-                  );
-                  break;
-                default:
-                  break;
-              }
-              return iconComponent;
-            },
+          screenOptions={() => ({
+            tabBarShowLabel: false,
+            tabBarStyle: {display: 'none', keyboardHidesTabBar: false},
+            // headerTitleStyle: {fontWeight: '800'},
+            // tabBarActiveTintColor: '#800080',
+            // tabBarInactiveTintColor: isDarkMode ? '#fff' : '#000',
+            // tabBarLabelStyle: {
+            //   fontSize: 12,
+            //   fontWeight: '700',
+            // },
+            // tabBarStyle: {
+            //   backgroundColor: isDarkMode
+            //     ? Dark.BottomTabColor
+            //     : Light.BottomTabColor,
+            //   borderTopColor: '#1D1D1D',
+            //   height: 55,
+            // },
+            // tabBarIcon: ({focused, color, size}) => {
+            //   let iconComponent;
+            //   switch (route.name) {
+            //     case 'MainScreen':
+            //       iconComponent = (
+            //         <MaterialCommunityIcons
+            //           name="map-outline"
+            //           size={size}
+            //           color={color}
+            //         />
+            //       );
+            //       break;
+            //     case 'ProfileScreen':
+            //       iconComponent = (
+            //         <Feather name="user" size={size} color={color} />
+            //       );
+            //       break;
+            //     case 'MusicTrackerScreen':
+            //       iconComponent = (
+            //         <CustomTabLabel focused={focused} color={color} />
+            //       );
+            //       break;
+            //     default:
+            //       break;
+            //   }
+            //   return iconComponent;
+            // },
           })}>
           <Tab.Screen
             name="MainScreen"
@@ -133,6 +135,10 @@ const App = () => {
       </Stack.Navigator>
     );
   };
+
+  useEffect(() => {
+    RNBootSplash.hide({fade: true});
+  }, []);
 
   return (
     <NavigationContainer>

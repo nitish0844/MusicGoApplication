@@ -28,6 +28,7 @@ import StarRating from '../MusicTracker/StarRating';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import haversineDistance from 'haversine-distance';
+import {getDistance} from 'geolib';
 
 const LATITUDE_DELTA = 0.0022;
 const LONGITUDE_DELTA = 0.0221;
@@ -78,71 +79,36 @@ const Map = () => {
   };
 
   const requestLocationPermission = async () => {
-    if (Platform.OS === 'ios') {
-      try {
-        const permissionResult = await check(
-          PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
-        );
+    try {
+      const permissionResult = await check(
+        PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+      );
 
-        if (permissionResult === RESULTS.GRANTED) {
-          Geolocation.getCurrentPosition(
-            position => {
-              const {latitude, longitude} = position.coords;
-              setRegion({
-                latitude,
-                longitude,
-                latitudeDelta: LATITUDE_DELTA,
-                longitudeDelta: LONGITUDE_DELTA,
-              });
-              setLoading(false);
-            },
-            error => {
-              console.error(error);
-              setLoading(false);
-              locationGettingError();
-            },
-            {enableHighAccuracy: true, timeout: 30000, maximumAge: 10000},
-          );
-        } else {
-          const requestResult = await request(
-            PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
-          );
-
-          if (requestResult === RESULTS.GRANTED) {
-            Geolocation.getCurrentPosition(
-              position => {
-                const {latitude, longitude} = position.coords;
-                setRegion({
-                  latitude,
-                  longitude,
-                  latitudeDelta: LATITUDE_DELTA,
-                  longitudeDelta: LONGITUDE_DELTA,
-                });
-                setLoading(false);
-              },
-              error => {
-                console.error(error);
-                setLoading(false);
-                locationGettingError();
-              },
-              {enableHighAccuracy: true, timeout: 30000, maximumAge: 10000},
-            );
-          } else {
+      if (permissionResult === RESULTS.GRANTED) {
+        Geolocation.getCurrentPosition(
+          position => {
+            const {latitude, longitude} = position.coords;
+            setRegion({
+              latitude,
+              longitude,
+              latitudeDelta: LATITUDE_DELTA,
+              longitudeDelta: LONGITUDE_DELTA,
+            });
             setLoading(false);
-            PermissionError();
-          }
-        }
-      } catch (err) {
-        console.warn(err);
-        setLoading(false);
-      }
-    } else {
-      try {
-        const permissionResult = await check(
+          },
+          error => {
+            console.error(error);
+            setLoading(false);
+            locationGettingError();
+          },
+          {enableHighAccuracy: true, timeout: 30000, maximumAge: 10000},
+        );
+      } else {
+        const requestResult = await request(
           PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
         );
 
-        if (permissionResult === RESULTS.GRANTED) {
+        if (requestResult === RESULTS.GRANTED) {
           Geolocation.getCurrentPosition(
             position => {
               const {latitude, longitude} = position.coords;
@@ -162,38 +128,13 @@ const Map = () => {
             {enableHighAccuracy: true, timeout: 30000, maximumAge: 10000},
           );
         } else {
-          const requestResult = await request(
-            PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-          );
-
-          if (requestResult === RESULTS.GRANTED) {
-            Geolocation.getCurrentPosition(
-              position => {
-                const {latitude, longitude} = position.coords;
-                setRegion({
-                  latitude,
-                  longitude,
-                  latitudeDelta: LATITUDE_DELTA,
-                  longitudeDelta: LONGITUDE_DELTA,
-                });
-                setLoading(false);
-              },
-              error => {
-                console.error(error);
-                setLoading(false);
-                locationGettingError();
-              },
-              {enableHighAccuracy: true, timeout: 30000, maximumAge: 10000},
-            );
-          } else {
-            setLoading(false);
-            PermissionError();
-          }
+          setLoading(false);
+          PermissionError();
         }
-      } catch (err) {
-        console.warn(err);
-        setLoading(false);
       }
+    } catch (err) {
+      console.warn(err);
+      setLoading(false);
     }
   };
 
@@ -203,6 +144,32 @@ const Map = () => {
     const watchId = Geolocation.watchPosition(
       position => {
         const {latitude, longitude} = position.coords;
+
+        MusicData.forEach(async musicItem => {
+          const markerLocation = {
+            latitude: parseFloat(musicItem.latitude),
+            longitude: parseFloat(musicItem.longitude),
+          };
+
+          const distanceToCircleCenter = getDistance(
+            {latitude, longitude},
+            markerLocation,
+          );
+
+          if (distanceToCircleCenter <= 200) {
+            alert(songID + 'can be accessed');
+
+            // create modal here
+
+            // Modal Code show and navigate
+
+            // function to add into array - Use this array and use map function to show it in profile page
+
+            await addItemToArray('songIds', songID);
+          } else {
+          }
+        });
+
         setRegion({
           latitude,
           longitude,
@@ -222,6 +189,23 @@ const Map = () => {
       Geolocation.clearWatch(watchId);
     };
   }, []);
+
+  async function addItemToArray(key, item) {
+    try {
+      const existingData = await AsyncStorage.getItem(key);
+      let currentArray = [];
+
+      if (existingData) {
+        currentArray = JSON.parse(existingData);
+      }
+
+      currentArray.push(item);
+
+      await AsyncStorage.setItem(key, JSON.stringify(currentArray));
+    } catch (error) {
+      console.error('Error adding item to array in AsyncStorage: ', error);
+    }
+  }
 
   // const handleSongPress = async (id, rating, songUrl) => {
   //   // Navigate to the MusicPlayer page and pass the song details as params
@@ -278,39 +262,39 @@ const Map = () => {
                   longitude: parseFloat(musicItem.longitude),
                 };
 
-                const distance = haversineDistance(
-                  userLocation,
-                  markerLocation,
-                  {
-                    unit: 'meter',
-                  },
-                );
+                // const distance = haversineDistance(
+                //   userLocation,
+                //   markerLocation,
+                //   {
+                //     unit: 'meter',
+                //   },
+                // );
 
-                if (distance <= radius) {
-                  return (
-                    <View key={index}>
-                      <Circle
-                        center={markerLocation}
-                        radius={200}
-                        fillColor={
-                          isDarkMode == 'dark'
-                            ? 'rgba(128,0,128,0.5)'
-                            : 'rgba(210,169,210,0.5)'
-                        }
-                        strokeColor="#A42DE8"
-                        strokeWidth={3}>
-                        <View style={styles.circleContainer}>
-                          <Text style={{textAlign: 'center'}}>
-                            {musicItem.date}
-                          </Text>
-                          <StarRating rating={musicItem.rating} />
-                        </View>
-                      </Circle>
-                    </View>
-                  );
-                } else {
-                  return null; // Do not render the marker
-                }
+                // if (distance <= radius) {
+                return (
+                  <View key={index}>
+                    <Circle
+                      center={markerLocation}
+                      radius={200}
+                      fillColor={
+                        isDarkMode == 'dark'
+                          ? 'rgba(128,0,128,0.5)'
+                          : 'rgba(210,169,210,0.5)'
+                      }
+                      strokeColor="#A42DE8"
+                      strokeWidth={3}>
+                      <View style={styles.circleContainer}>
+                        <Text style={{textAlign: 'center'}}>
+                          {musicItem.date}
+                        </Text>
+                        <StarRating rating={musicItem.rating} />
+                      </View>
+                    </Circle>
+                  </View>
+                );
+                // } else {
+                //   return null; // Do not render the marker
+                // }
               })}
             </MapView>
           )}
