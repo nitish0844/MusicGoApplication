@@ -22,6 +22,8 @@ target 'musicgoapplication' do
 
   pod 'react-native-track-player', :path => '../node_modules/react-native-track-player'
 
+  pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
+
   target 'musicgoapplicationTests' do
     inherit! :complete
     # Pods for testing

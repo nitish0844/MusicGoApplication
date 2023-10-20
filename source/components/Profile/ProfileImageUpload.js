@@ -9,6 +9,7 @@ import {
   TouchableWithoutFeedback,
   KeyboardAvoidingView,
   ScrollView,
+  useColorScheme,
 } from 'react-native';
 import React, {useState, useRef} from 'react';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -22,11 +23,15 @@ import {
   AlertNotificationRoot,
   Toast,
 } from 'react-native-alert-notification';
+import {Light, Dark} from '../Theme/Colors';
 
 const ProfileImageUpload = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [name, setName] = useState('');
   const scrollViewRef = useRef(null);
+
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
 
   const pickImage = () => {
     ImagePicker.openPicker({
@@ -121,7 +126,7 @@ const ProfileImageUpload = () => {
   return (
     <AlertNotificationRoot>
       <KeyboardAvoidingView
-        style={{backgroundColor: '#fff', flex: 1}}
+        style={{backgroundColor: isDarkMode ? Dark.bg : Light.bg, flex: 1}}
         behavior="height">
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <ScrollView
@@ -131,7 +136,6 @@ const ProfileImageUpload = () => {
             <View
               style={{
                 alignItems: 'center',
-                backgroundColor: '#fff',
                 flex: 1,
                 paddingTop: '5%',
               }}>
@@ -141,7 +145,7 @@ const ProfileImageUpload = () => {
                   height: '70%',
                   backgroundColor: 'transparent',
                   borderWidth: 2,
-                  borderColor: '#800080', // Border color
+                  // borderColor: '#800080',
                   borderRadius: 10, // Border radius
                   borderStyle: 'dashed',
                   borderColor: selectedImage ? 'transparent' : '#800080',
@@ -162,27 +166,80 @@ const ProfileImageUpload = () => {
                       }}
                     />
                     <TouchableOpacity
-                      style={[styles.buttonBg, {marginTop: '120%'}]}
+                      style={[
+                        styles.buttonBg,
+                        {
+                          marginTop: '120%',
+                          backgroundColor: isDarkMode
+                            ? Dark.textColor
+                            : Light.textColor,
+                        },
+                      ]}
                       onPress={pickImage}>
-                      <Text style={styles.buttonText}>Change Photo</Text>
+                      <Text
+                        style={[
+                          styles.buttonText,
+                          {color: isDarkMode ? '#000' : '#fff'},
+                        ]}>
+                        Change Photo
+                      </Text>
                     </TouchableOpacity>
                   </>
                 ) : (
-                  <TouchableOpacity style={styles.buttonBg} onPress={pickImage}>
-                    <Text style={styles.buttonText}>Add Photo</Text>
+                  <TouchableOpacity
+                    style={[
+                      styles.buttonBg,
+                      {
+                        backgroundColor: isDarkMode
+                          ? Dark.textColor
+                          : Light.textColor,
+                      },
+                    ]}
+                    onPress={pickImage}>
+                    <Text
+                      style={[
+                        styles.buttonText,
+                        {color: isDarkMode ? '#000' : '#fff'},
+                      ]}>
+                      Add Photo
+                    </Text>
                   </TouchableOpacity>
                 )}
               </View>
               <TextInput
-                style={styles.input}
+                style={[
+                  styles.input,
+                  {
+                    backgroundColor: isDarkMode
+                      ? Dark.textColor
+                      : Light.textColor,
+
+                    color: isDarkMode ? '#000' : '#fff',
+                  },
+                ]}
                 placeholder="Name"
+                placeholderTextColor={isDarkMode ? '#000' : '#fff'}
                 value={name}
                 onChangeText={handleNameChange}
               />
               <TouchableOpacity
-                style={[styles.buttonBg, {marginTop: '5%'}]}
+                style={[
+                  styles.buttonBg,
+                  {
+                    marginTop: '5%',
+                    backgroundColor: isDarkMode
+                      ? Dark.textColor
+                      : Light.textColor,
+                  },
+                ]}
                 onPress={UpdateButton}>
-                <Text style={styles.buttonText}>Update</Text>
+                <Text
+                  style={[
+                    styles.buttonText,
+                    {color: isDarkMode ? '#000' : '#fff'},
+                  ]}>
+                  Update
+                </Text>
               </TouchableOpacity>
             </View>
           </ScrollView>
@@ -199,7 +256,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   buttonBg: {
-    backgroundColor: '#800080',
+    // backgroundColor: '#800080',
     width: 120,
     height: 40,
     justifyContent: 'center',
@@ -212,7 +269,7 @@ const styles = StyleSheet.create({
     height: '8%',
     borderWidth: 1,
     color: '#000',
-    backgroundColor: '#f0c4f0',
+    // backgroundColor: '#f0c4f0',
     borderWidth: 1,
     borderColor: '#800080', // Border color
     borderRadius: 10, // Border radius

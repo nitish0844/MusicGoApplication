@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {Text, View} from 'react-native';
+import {Text, View, StyleSheet, useColorScheme} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Feather from 'react-native-vector-icons/Feather';
 
@@ -11,11 +11,13 @@ import {
   TransitionSpecs,
   HeaderStyleInterpolators,
 } from '@react-navigation/stack';
+import LinearGradient from 'react-native-linear-gradient';
 
 import MainScreen from './source/screens/MainScreen';
 import ProfileScreen from './source/screens/ProfileScreen';
 import MusicTrackerScreen from './source/screens/MusicTrackerScreen';
 import MusicPlayer from './source/components/MusicTracker/MusicPlayer';
+import {Dark, Light} from './source/components/Theme/Colors';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -23,7 +25,7 @@ const Tab = createBottomTabNavigator();
 const CustomTabLabel = ({focused, color}) => (
   <View>
     <Text style={{color, fontSize: 17, fontWeight: '600', textAlign: 'center'}}>
-      SongsTrax
+      SongTrax
     </Text>
     <Text style={{color, fontSize: 12, fontWeight: '600', textAlign: 'center'}}>
       Find Nearby Music
@@ -32,6 +34,9 @@ const CustomTabLabel = ({focused, color}) => (
 );
 
 const App = () => {
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
+
   const RootNavigator = () => {
     const BottomTabs = () => {
       return (
@@ -39,15 +44,18 @@ const App = () => {
           initialRouteName="MainScreen"
           screenOptions={({route}) => ({
             tabBarShowLabel: false, // Hide default tab labels
-            headerTintColor: '#fff',
             headerTitleStyle: {fontWeight: '800'},
             tabBarActiveTintColor: '#800080',
-            tabBarInactiveTintColor: '#000',
+            tabBarInactiveTintColor: isDarkMode ? '#fff' : '#000',
             tabBarLabelStyle: {
               fontSize: 12,
               fontWeight: '700',
             },
             tabBarStyle: {
+              backgroundColor: isDarkMode
+                ? Dark.BottomTabColor
+                : Light.BottomTabColor,
+              borderTopColor: '#1D1D1D',
               height: 55,
             },
             tabBarIcon: ({focused, color, size}) => {
@@ -116,6 +124,7 @@ const App = () => {
           component={BottomTabs}
           options={{headerShown: false}}
         />
+
         <Stack.Screen
           name="MusicPlayer"
           component={MusicPlayer}

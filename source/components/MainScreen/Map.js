@@ -8,8 +8,9 @@ import {
   ActivityIndicator,
   Text,
   Image,
+  TouchableOpacity,
 } from 'react-native';
-import MapView, {Marker, Callout} from 'react-native-maps';
+import MapView, {Marker, Callout, Circle} from 'react-native-maps';
 import {check, PERMISSIONS, request, RESULTS} from 'react-native-permissions';
 import Geolocation from 'react-native-geolocation-service';
 import {DarkMapStyle} from './DarkMapStyle';
@@ -24,10 +25,12 @@ import {useNavigation} from '@react-navigation/native';
 import {MusicData} from '../../assets/Data/Data';
 import StarRating from '../MusicTracker/StarRating';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import haversineDistance from 'haversine-distance';
 
-const LATITUDE_DELTA = 0.0922;
-const LONGITUDE_DELTA = 0.0421;
+const LATITUDE_DELTA = 0.0022;
+const LONGITUDE_DELTA = 0.0221;
 
 const MarkerUrl =
   'https://firebasestorage.googleapis.com/v0/b/songtrax-e5491.appspot.com/o/png-clipart-fashion-red-headphone-music-cds-fashion-red-removebg-preview.png?alt=media&token=28482076-d067-4a01-96e5-4fcdcde9789d';
@@ -220,10 +223,33 @@ const Map = () => {
     };
   }, []);
 
-  const handleSongPress = (id, rating, songUrl) => {
-    // Navigate to the MusicPlayer page and pass the song details as params
-    navigation.navigate('MusicPlayer', {id, rating, songUrl});
-  };
+  // const handleSongPress = async (id, rating, songUrl) => {
+  //   // Navigate to the MusicPlayer page and pass the song details as params
+  //   await storeSongIDInAsyncStorage(id);
+  //   navigation.navigate('MusicPlayer', {id, rating, songUrl});
+  // };
+
+  useEffect(() => {
+    const songIDs = [];
+
+    MusicData.forEach((musicItem, index) => {
+      const markerLocation = {
+        latitude: parseFloat(musicItem.latitude),
+        longitude: parseFloat(musicItem.longitude),
+      };
+
+      const distance = haversineDistance(userLocation, markerLocation, {
+        unit: 'meter',
+      });
+
+      if (distance <= radius) {
+        songIDs.push(musicItem.songID);
+      }
+    });
+
+    // Store the song IDs as an array in AsyncStorage (replace 'songIDKey' with an appropriate key)
+    AsyncStorage.setItem('songIDKey', JSON.stringify(songIDs));
+  }, [userLocation]); // Execute when userLocation changes
 
   return (
     <AlertNotificationRoot>
@@ -262,28 +288,25 @@ const Map = () => {
 
                 if (distance <= radius) {
                   return (
-                    <Marker
-                      key={index}
-                      coordinate={markerLocation}
-                      pinColor="red">
-                      <Image
-                        source={{uri: MarkerUrl}}
-                        style={styles.customMarker}
-                      />
-                      <Callout
-                        onPress={() =>
-                          handleSongPress(
-                            musicItem.songID,
-                            musicItem.rating,
-                            musicItem.song,
-                          )
-                        }>
-                        <Text style={{textAlign: 'center'}}>
-                          {musicItem.date}
-                        </Text>
-                        <StarRating rating={musicItem.rating} />
-                      </Callout>
-                    </Marker>
+                    <View key={index}>
+                      <Circle
+                        center={markerLocation}
+                        radius={200}
+                        fillColor={
+                          isDarkMode == 'dark'
+                            ? 'rgba(128,0,128,0.5)'
+                            : 'rgba(210,169,210,0.5)'
+                        }
+                        strokeColor="#A42DE8"
+                        strokeWidth={3}>
+                        <View style={styles.circleContainer}>
+                          <Text style={{textAlign: 'center'}}>
+                            {musicItem.date}
+                          </Text>
+                          <StarRating rating={musicItem.rating} />
+                        </View>
+                      </Circle>
+                    </View>
                   );
                 } else {
                   return null; // Do not render the marker

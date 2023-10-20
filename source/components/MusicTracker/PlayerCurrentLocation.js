@@ -1,11 +1,15 @@
-import {View, Text, StyleSheet, Image} from 'react-native';
+import {View, Text, StyleSheet, Image, useColorScheme} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import {Light, Dark} from '../Theme/Colors';
 
 const PlayerCurrentLocation = () => {
   const [userName, setUserName] = useState(''); // State for user name
   const [profileImageUrl, setProfileImageUrl] = useState(''); // State for profile image URL
+
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
 
   useEffect(() => {
     // Retrieve user name from AsyncStorage
@@ -34,26 +38,51 @@ const PlayerCurrentLocation = () => {
   return (
     <View style={styles.container}>
       <View style={styles.TextContainer}>
-        <Text style={styles.text}>Currently At this Location</Text>
+        <Text
+          style={[
+            styles.text,
+            {color: isDarkMode ? Dark.textColor : Light.textColor},
+          ]}>
+          Currently At this Location
+        </Text>
       </View>
 
       <View style={styles.ImageContainer}>
         <View style={[styles.imageBackground, {padding: 5}]}>
           <Image source={{uri: profileImageUrl}} style={styles.profileImage} />
         </View>
-        <Text style={styles.userName}>{userName}</Text>
+        <Text
+          style={[
+            styles.userName,
+            {color: isDarkMode ? Dark.textColor : Light.textColor},
+          ]}>
+          {userName}
+        </Text>
       </View>
       <View style={styles.ImageContainer}>
-        <View style={styles.imageBackground}>
+        <View
+          style={[
+            styles.imageBackground,
+            {backgroundColor: isDarkMode ? Dark.textColor : Light.textColor},
+          ]}>
           {/* <Image source={{uri: profileImageUrl}} style={styles.profileImage} /> */}
           <FontAwesome5
             name="smile-beam"
             size={95}
-            color="#800080"
-            style={{backgroundColor: '#fff', borderRadius: 50}}
+            color={isDarkMode ? Dark.textColor : Light.textColor}
+            style={{
+              backgroundColor: isDarkMode ? Dark.bg : Light.bg,
+              borderRadius: 50,
+            }}
           />
         </View>
-        <Text style={styles.userName}>And others...</Text>
+        <Text
+          style={[
+            styles.userName,
+            {color: isDarkMode ? Dark.textColor : Light.textColor},
+          ]}>
+          And others...
+        </Text>
       </View>
     </View>
   );
@@ -62,7 +91,6 @@ const PlayerCurrentLocation = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     marginTop: '30%',
   },
   TextContainer: {
@@ -70,7 +98,7 @@ const styles = StyleSheet.create({
     alignContent: 'flex-end',
   },
   text: {
-    color: '#800080',
+    // color: '#800080',
     fontSize: 18,
     fontWeight: 'bold',
   },
@@ -80,7 +108,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   imageBackground: {
-    backgroundColor: '#800080', // Violet background color
+    // backgroundColor: '#800080', // Violet background color
     borderRadius: 50, // Make it circular
     // padding: 5, // Add some padding
   },
@@ -91,7 +119,7 @@ const styles = StyleSheet.create({
     marginTop: '5%',
   },
   userName: {
-    color: '#800080',
+    // color: '#800080',
     fontSize: 18,
     fontWeight: 'bold',
     marginLeft: '5%',

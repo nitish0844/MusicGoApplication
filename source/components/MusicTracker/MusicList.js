@@ -5,19 +5,47 @@ import {
   Button,
   StyleSheet,
   TouchableOpacity,
+  useColorScheme,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import StarRating from './StarRating';
 import {useNavigation} from '@react-navigation/native';
 import {MusicData} from '../../assets/Data/Data';
+import {Light, Dark} from '../Theme/Colors';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const MusicList = () => {
   const navigation = useNavigation();
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
+
+  const [filteredMusicData, setFilteredMusicData] = useState([]);
 
   const handleSongPress = (id, rating, songUrl) => {
     // Navigate to the MusicPlayer page and pass the song details as params
     navigation.navigate('MusicPlayer', {id, rating, songUrl});
   };
+
+  const GetData = async () => {
+    try {
+      // Retrieve song IDs from AsyncStorage
+      const storedSongIDs = await AsyncStorage.getItem('songIDKey');
+      const songIDs = storedSongIDs ? JSON.parse(storedSongIDs) : [];
+      console.log('Retrieved song IDs:', songIDs);
+
+      const filteredData = MusicData.filter(item =>
+        songIDs.includes(item.songID),
+      );
+      setFilteredMusicData(filteredData);
+    } catch (error) {
+      console.error('Error while getting song IDs:', error);
+    }
+  };
+
+  useEffect(() => {
+    GetData();
+  }, []);
 
   const renderItem = ({item, index}) => (
     <TouchableOpacity
@@ -31,9 +59,13 @@ const MusicList = () => {
   );
 
   return (
-    <View style={{backgroundColor: '#fff', marginTop: '5%'}}>
+    <View
+      style={{
+        backgroundColor: isDarkMode ? Dark.bg : Light.bg,
+        flex: 1,
+      }}>
       <FlatList
-        data={MusicData}
+        data={filteredMusicData}
         renderItem={renderItem}
         keyExtractor={item => item.songID}
       />

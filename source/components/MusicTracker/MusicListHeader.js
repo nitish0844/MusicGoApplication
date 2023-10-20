@@ -1,14 +1,28 @@
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, useColorScheme} from 'react-native';
 import React from 'react';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import {Light, Dark} from '../Theme/Colors';
 
 const MusicListHeader = () => {
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
+
   return (
-    <View style={styles.container}>
+    <View style={{backgroundColor: isDarkMode ? Dark.bg : Light.bg}}>
       <View style={styles.IconContainer}>
-        <FontAwesome5 name="map-pin" size={60} color={'#800080'} />
+        <FontAwesome5
+          name="map-pin"
+          size={60}
+          color={isDarkMode ? Dark.textColor : Light.textColor}
+        />
         <View style={styles.textContainer}>
-          <Text style={styles.locationText}>UQ Lake</Text>
+          <Text
+            style={[
+              styles.locationText,
+              {color: isDarkMode ? Dark.textColor : Light.textColor},
+            ]}>
+            UQ Lake
+          </Text>
         </View>
       </View>
     </View>
@@ -21,11 +35,7 @@ const styles = StyleSheet.create({
     marginLeft: '20%',
     flexDirection: 'row',
   },
-  container: {
-    backgroundColor: '#fff',
-  },
   locationText: {
-    color: '#800080',
     fontSize: 28,
     fontWeight: 'bold',
   },

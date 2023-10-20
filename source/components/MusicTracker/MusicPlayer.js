@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   LogBox,
+  useColorScheme,
 } from 'react-native';
 import TrackPlayer from 'react-native-track-player';
 import {useRoute} from '@react-navigation/native';
@@ -13,11 +14,16 @@ import StarRating from './StarRating';
 import MusicListHeader from './MusicListHeader';
 import PlayerCurrentLocation from './PlayerCurrentLocation';
 
+import {Light, Dark} from '../Theme/Colors';
+
 LogBox.ignoreAllLogs();
 
 const MusicPlayer = () => {
   const route = useRoute();
   const {id, rating, songUrl} = route.params;
+
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
 
   useEffect(() => {
     async function initializeTrackPlayer() {
@@ -29,16 +35,16 @@ const MusicPlayer = () => {
       await TrackPlayer.setupPlayer();
 
       // Add a track to the queue
-      await TrackPlayer.add({
-        id: 'trackId',
-        url: songUrl,
-        title: 'Track Title',
-        artist: 'Track Artist',
-        // artwork: require('track.png'),
-      });
+      // await TrackPlayer.add({
+      //   id: 'trackId',
+      //   url: songUrl,
+      //   title: 'Track Title',
+      //   artist: 'Track Artist',
+      //   // artwork: require('track.png'),
+      // });
 
       // Start playing it
-      await TrackPlayer.play();
+      // await TrackPlayer.play();
     }
 
     // Check if TrackPlayer is initialized, and initialize it if necessary
@@ -69,11 +75,16 @@ const MusicPlayer = () => {
   };
 
   return (
-    <View style={{backgroundColor: '#fff', flex: 1}}>
+    <View style={{backgroundColor: isDarkMode ? Dark.bg : Light.bg, flex: 1}}>
       <MusicListHeader />
       <View>
         <Text style={styles.songID}>Song: {id}</Text>
-        <TouchableOpacity style={styles.buttonContainer} onPress={playTrack}>
+        <TouchableOpacity
+          style={[
+            styles.buttonContainer,
+            {backgroundColor: isDarkMode ? Dark.textColor : Light.textColor},
+          ]}
+          onPress={playTrack}>
           <Text style={styles.ButtonText}>Play Music</Text>
         </TouchableOpacity>
         <StarRating rating={rating} />
