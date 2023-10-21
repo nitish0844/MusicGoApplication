@@ -11,7 +11,7 @@ import {
   ScrollView,
   useColorScheme,
 } from 'react-native';
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import ImagePicker from 'react-native-image-crop-picker';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import storage from '@react-native-firebase/storage';
@@ -30,6 +30,22 @@ const ProfileImageUpload = ({navigation}) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [name, setName] = useState('');
   const scrollViewRef = useRef(null);
+
+  useEffect(() => {}, []);
+
+  const getData = async () => {
+    const res = await AsyncStorage.getItem('profileImageURL');
+
+    setSelectedImage(res);
+
+    const names = await AsyncStorage.getItem('Name');
+
+    setName(names);
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
@@ -63,17 +79,10 @@ const ProfileImageUpload = ({navigation}) => {
       const downloadUrl = await storageRef.getDownloadURL();
 
       await AsyncStorage.setItem('profileImageURL', downloadUrl);
-
     } catch (error) {
       console.log('Image upload error:', error);
     }
   };
-
-  useFocusEffect(() => {
-    if (scrollViewRef.current) {
-      scrollViewRef.current.scrollTo({x: 0, y: 0, animated: false});
-    }
-  });
 
   const UploadName = async () => {
     await AsyncStorage.setItem('Name', name); // Corrected the function
@@ -85,7 +94,6 @@ const ProfileImageUpload = ({navigation}) => {
       title: 'Alert',
       textBody: 'Please Enter the Name',
       button: 'close',
-      // autoClose: 2000,
     });
   };
 
@@ -125,9 +133,7 @@ const ProfileImageUpload = ({navigation}) => {
 
   return (
     <AlertNotificationRoot>
-      <KeyboardAvoidingView
-        style={{backgroundColor: isDarkMode ? Dark.bg : Light.bg, flex: 1}}
-        behavior="height">
+      <View style={{backgroundColor: isDarkMode ? Dark.bg : Light.bg, flex: 1}}>
         <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
           <ScrollView
             ref={scrollViewRef}
@@ -251,7 +257,7 @@ const ProfileImageUpload = ({navigation}) => {
             </View>
           </ScrollView>
         </TouchableWithoutFeedback>
-      </KeyboardAvoidingView>
+      </View>
       {!focus && (
         <View style={{bottom: 0}}>
           <NewBottomTab navigation={navigation} />
