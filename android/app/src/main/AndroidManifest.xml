@@ -64,16 +64,13 @@
       android:theme="@style/BootTheme"
       android:launchMode="singleTask"
       android:exported="true">
-      <!-- <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
-        <category android:name="android.intent.category.LAUNCHER" />
-      </intent-filter> -->
+    
     </activity>
 
   
 
       <meta-data android:name="com.google.android.geo.API_KEY" 
-        android:value="AIzaSyBDDOr5YH_yg0l3PBdFT4aC33khrAsW_j8"/>
+        android:value="AIzaSyDRttTWmcYfZgrbkICap3KN169wny8RkQY"/>
 
         <uses-library android:name="org.apache.http.legacy" android:required="false"/>
     </application>
