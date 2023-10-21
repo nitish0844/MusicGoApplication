@@ -4,7 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {Light, Dark} from '../Theme/Colors';
 
-const PlayerCurrentLocation = () => {
+const PlayerCurrentLocation = ({location}) => {
   const [userName, setUserName] = useState(''); // State for user name
   const [profileImageUrl, setProfileImageUrl] = useState(''); // State for profile image URL
 
@@ -23,7 +23,6 @@ const PlayerCurrentLocation = () => {
         console.error('Error retrieving user name: ', error);
       });
 
-    // Retrieve profile image URL from AsyncStorage
     AsyncStorage.getItem('profileImageURL')
       .then(value => {
         if (value) {
@@ -43,7 +42,7 @@ const PlayerCurrentLocation = () => {
             styles.text,
             {color: isDarkMode ? Dark.textColor : Light.textColor},
           ]}>
-          Currently At this Location
+          Currently At this Location : {location}
         </Text>
       </View>
 
@@ -59,13 +58,12 @@ const PlayerCurrentLocation = () => {
           {userName}
         </Text>
       </View>
-      <View style={styles.ImageContainer}>
+      {/* <View style={styles.ImageContainer}>
         <View
           style={[
             styles.imageBackground,
             {backgroundColor: isDarkMode ? Dark.textColor : Light.textColor},
           ]}>
-          {/* <Image source={{uri: profileImageUrl}} style={styles.profileImage} /> */}
           <FontAwesome5
             name="smile-beam"
             size={95}
@@ -83,7 +81,7 @@ const PlayerCurrentLocation = () => {
           ]}>
           And others...
         </Text>
-      </View>
+      </View> */}
     </View>
   );
 };

@@ -1,75 +1,32 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {
   View,
   Text,
-  Button,
   StyleSheet,
   TouchableOpacity,
-  LogBox,
   useColorScheme,
 } from 'react-native';
 import TrackPlayer from 'react-native-track-player';
-import {useRoute} from '@react-navigation/native';
 import StarRating from './StarRating';
 import MusicListHeader from './MusicListHeader';
 import PlayerCurrentLocation from './PlayerCurrentLocation';
 
 import {Light, Dark} from '../Theme/Colors';
+import NewBottomTab from '../NewBottomTab/NewBottomTab';
 
-LogBox.ignoreAllLogs();
-
-const MusicPlayer = () => {
-  const route = useRoute();
-  const {id, rating, songUrl} = route.params;
+const MusicPlayer = ({navigation, route}) => {
+  const {id, rating, songUrl, location} = route.params;
 
   const colorScheme = useColorScheme();
   const isDarkMode = colorScheme === 'dark';
 
-  useEffect(() => {
-    async function initializeTrackPlayer() {
-      // const isPlayerInitialized = await TrackPlayer.isInitialized();
-      // if (!isPlayerInitialized) {
-      //   await TrackPlayer.setupPlayer();
-      // }
-
-      await TrackPlayer.setupPlayer();
-
-      // Add a track to the queue
-      // await TrackPlayer.add({
-      //   id: 'trackId',
-      //   url: songUrl,
-      //   title: 'Track Title',
-      //   artist: 'Track Artist',
-      //   // artwork: require('track.png'),
-      // });
-
-      // Start playing it
-      // await TrackPlayer.play();
-    }
-
-    // Check if TrackPlayer is initialized, and initialize it if necessary
-    initializeTrackPlayer();
-
-    // Clean up when the component unmounts
-    return async () => {
-      await TrackPlayer.reset(); // Stop and clear the queue
-      await TrackPlayer.destroy(); // Destroy the player
-    };
-  }, [songUrl]);
-
-  const pauseTrack = async () => {
-    await TrackPlayer.pause();
-  };
-
   const playTrack = async () => {
-    // Reset the player and play the new song
-    await TrackPlayer.reset();
+    await TrackPlayer.setupPlayer();
     await TrackPlayer.add({
-      id: 'trackId',
+      id: '1',
       url: songUrl,
       title: 'Track Title',
       artist: 'Track Artist',
-      // artwork: require('track.png'),
     });
     await TrackPlayer.play();
   };
@@ -90,7 +47,11 @@ const MusicPlayer = () => {
         <StarRating rating={rating} />
       </View>
       <View style={{flex: 1}}>
-        <PlayerCurrentLocation />
+        <PlayerCurrentLocation location={location} />
+      </View>
+
+      <View style={{bottom: 0}}>
+        <NewBottomTab navigation={navigation} />
       </View>
     </View>
   );

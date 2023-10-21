@@ -26,10 +26,7 @@ const NewBottomTab = ({navigation}) => {
         }}>
         <MaterialCommunityIcons name="map-outline" size={28} color={'white'} />
       </Pressable>
-      <Pressable
-        onPress={() => {
-          navigation.navigate('MusicTrackerScreen');
-        }}>
+      <Pressable>
         <Text
           style={{
             color: 'white',
@@ -56,4 +53,3 @@ const NewBottomTab = ({navigation}) => {
 };
 
 export default NewBottomTab;
-

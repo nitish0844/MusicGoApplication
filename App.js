@@ -20,16 +20,6 @@ import MusicPlayer from './source/components/MusicTracker/MusicPlayer';
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const CustomTabLabel = ({focused, color}) => (
-  <View>
-    <Text style={{color, fontSize: 17, fontWeight: '600', textAlign: 'center'}}>
-      SongTrax
-    </Text>
-    <Text style={{color, fontSize: 12, fontWeight: '600', textAlign: 'center'}}>
-      Find Nearby Music
-    </Text>
-  </View>
-);
 
 const App = () => {
   const colorScheme = useColorScheme();
@@ -43,47 +33,7 @@ const App = () => {
           screenOptions={() => ({
             tabBarShowLabel: false,
             tabBarStyle: {display: 'none', keyboardHidesTabBar: false},
-            // headerTitleStyle: {fontWeight: '800'},
-            // tabBarActiveTintColor: '#800080',
-            // tabBarInactiveTintColor: isDarkMode ? '#fff' : '#000',
-            // tabBarLabelStyle: {
-            //   fontSize: 12,
-            //   fontWeight: '700',
-            // },
-            // tabBarStyle: {
-            //   backgroundColor: isDarkMode
-            //     ? Dark.BottomTabColor
-            //     : Light.BottomTabColor,
-            //   borderTopColor: '#1D1D1D',
-            //   height: 55,
-            // },
-            // tabBarIcon: ({focused, color, size}) => {
-            //   let iconComponent;
-            //   switch (route.name) {
-            //     case 'MainScreen':
-            //       iconComponent = (
-            //         <MaterialCommunityIcons
-            //           name="map-outline"
-            //           size={size}
-            //           color={color}
-            //         />
-            //       );
-            //       break;
-            //     case 'ProfileScreen':
-            //       iconComponent = (
-            //         <Feather name="user" size={size} color={color} />
-            //       );
-            //       break;
-            //     case 'MusicTrackerScreen':
-            //       iconComponent = (
-            //         <CustomTabLabel focused={focused} color={color} />
-            //       );
-            //       break;
-            //     default:
-            //       break;
-            //   }
-            //   return iconComponent;
-            // },
+            
           })}>
           <Tab.Screen
             name="MainScreen"

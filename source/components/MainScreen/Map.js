@@ -9,6 +9,7 @@ import {
   Text,
   Image,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import MapView, {Marker, Callout, Circle} from 'react-native-maps';
 import {check, PERMISSIONS, request, RESULTS} from 'react-native-permissions';
@@ -145,7 +146,7 @@ const Map = () => {
       position => {
         const {latitude, longitude} = position.coords;
 
-        MusicData.forEach(async musicItem => {
+        MusicData?.forEach(async musicItem => {
           const markerLocation = {
             latitude: parseFloat(musicItem.latitude),
             longitude: parseFloat(musicItem.longitude),
@@ -157,13 +158,28 @@ const Map = () => {
           );
 
           if (distanceToCircleCenter <= 200) {
-            alert(songID + 'can be accessed');
-
-            // create modal here
-
-            // Modal Code show and navigate
-
-            // function to add into array - Use this array and use map function to show it in profile page
+            Alert.alert(
+              `Entered the location ${musicItem?.location} and found a music`,
+              'Save the song and move to next screen',
+              [
+                {
+                  text: 'Cancel',
+                  onPress: () => {},
+                  style: 'cancel',
+                },
+                {
+                  text: 'Save and Play',
+                  onPress: () =>
+                    navigation.navigate('MusicPlayer', {
+                      id: musicItem?.id,
+                      rating: musicItem?.rating,
+                      songUrl: musicItem?.songUrl,
+                      location: musicItem?.location,
+                    }),
+                },
+              ],
+              {cancelable: false},
+            );
 
             await addItemToArray('songIds', songID);
           } else {
@@ -207,34 +223,6 @@ const Map = () => {
     }
   }
 
-  // const handleSongPress = async (id, rating, songUrl) => {
-  //   // Navigate to the MusicPlayer page and pass the song details as params
-  //   await storeSongIDInAsyncStorage(id);
-  //   navigation.navigate('MusicPlayer', {id, rating, songUrl});
-  // };
-
-  useEffect(() => {
-    const songIDs = [];
-
-    MusicData.forEach((musicItem, index) => {
-      const markerLocation = {
-        latitude: parseFloat(musicItem.latitude),
-        longitude: parseFloat(musicItem.longitude),
-      };
-
-      const distance = haversineDistance(userLocation, markerLocation, {
-        unit: 'meter',
-      });
-
-      if (distance <= radius) {
-        songIDs.push(musicItem.songID);
-      }
-    });
-
-    // Store the song IDs as an array in AsyncStorage (replace 'songIDKey' with an appropriate key)
-    AsyncStorage.setItem('songIDKey', JSON.stringify(songIDs));
-  }, [userLocation]); // Execute when userLocation changes
-
   return (
     <AlertNotificationRoot>
       <View style={styles.container}>
@@ -255,22 +243,12 @@ const Map = () => {
               region={region}
               showsUserLocation={true}
               customMapStyle={isDarkMode ? DarkMapStyle : normalMapStyle}>
-              {MusicData.map((musicItem, index) => {
-                // Calculate the distance between the user's location and the marker
+              {MusicData?.map((musicItem, index) => {
                 const markerLocation = {
                   latitude: parseFloat(musicItem.latitude),
                   longitude: parseFloat(musicItem.longitude),
                 };
 
-                // const distance = haversineDistance(
-                //   userLocation,
-                //   markerLocation,
-                //   {
-                //     unit: 'meter',
-                //   },
-                // );
-
-                // if (distance <= radius) {
                 return (
                   <View key={index}>
                     <Circle
@@ -292,9 +270,6 @@ const Map = () => {
                     </Circle>
                   </View>
                 );
-                // } else {
-                //   return null; // Do not render the marker
-                // }
               })}
             </MapView>
           )}

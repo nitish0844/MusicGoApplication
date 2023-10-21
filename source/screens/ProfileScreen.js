@@ -8,10 +8,7 @@ const ProfileScreen = ({navigation}) => {
   return (
     <View style={{flex: 1}}>
       <ProfileTitle />
-      <ProfileImageUpload />
-      <View style={{bottom: 0}}>
-        <NewBottomTab navigation={navigation} />
-      </View>
+      <ProfileImageUpload navigation={navigation} />
     </View>
   );
 };

@@ -24,8 +24,9 @@ import {
   Toast,
 } from 'react-native-alert-notification';
 import {Light, Dark} from '../Theme/Colors';
+import NewBottomTab from '../NewBottomTab/NewBottomTab';
 
-const ProfileImageUpload = () => {
+const ProfileImageUpload = ({navigation}) => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [name, setName] = useState('');
   const scrollViewRef = useRef(null);
@@ -53,7 +54,6 @@ const ProfileImageUpload = () => {
 
   const uploadImage = async path => {
     try {
-      console.log('Image path:', path); // Log the path for debugging
       const response = await fetch(path);
       const blob = await response.blob();
 
@@ -64,7 +64,6 @@ const ProfileImageUpload = () => {
 
       await AsyncStorage.setItem('profileImageURL', downloadUrl);
 
-      console.log('Image uploaded successfully!');
     } catch (error) {
       console.log('Image upload error:', error);
     }
@@ -78,7 +77,6 @@ const ProfileImageUpload = () => {
 
   const UploadName = async () => {
     await AsyncStorage.setItem('Name', name); // Corrected the function
-    console.log('Name Updated successfully!');
   };
 
   const NameError = () => {
@@ -122,6 +120,8 @@ const ProfileImageUpload = () => {
       UploadSuccess();
     }
   };
+
+  const [focus, setFocus] = useState(false);
 
   return (
     <AlertNotificationRoot>
@@ -207,6 +207,12 @@ const ProfileImageUpload = () => {
                 )}
               </View>
               <TextInput
+                onFocus={() => {
+                  setFocus(true);
+                }}
+                onBlur={() => {
+                  setFocus(false);
+                }}
                 style={[
                   styles.input,
                   {
@@ -222,6 +228,7 @@ const ProfileImageUpload = () => {
                 value={name}
                 onChangeText={handleNameChange}
               />
+
               <TouchableOpacity
                 style={[
                   styles.buttonBg,
@@ -245,6 +252,11 @@ const ProfileImageUpload = () => {
           </ScrollView>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
+      {!focus && (
+        <View style={{bottom: 0}}>
+          <NewBottomTab navigation={navigation} />
+        </View>
+      )}
     </AlertNotificationRoot>
   );
 };

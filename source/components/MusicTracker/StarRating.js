@@ -1,21 +1,9 @@
 import React from 'react';
-import {View, Text, TouchableOpacity} from 'react-native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {View} from 'react-native';
+import {Rating} from '@rneui/themed';
+import {Text} from 'react-native';
 
 const StarRating = ({rating}) => {
-  const stars = [];
-  for (let i = 1; i <= 5; i++) {
-    stars.push(
-      <TouchableOpacity key={i} activeOpacity={0.7}>
-        <MaterialCommunityIcons
-          name={i <= rating ? 'star' : 'star-outline'}
-          size={30}
-          color="#FFD700"
-        />
-      </TouchableOpacity>,
-    );
-  }
-
   return (
     <View
       style={{
@@ -23,7 +11,9 @@ const StarRating = ({rating}) => {
         alignSelf: 'center',
         marginTop: '5%',
       }}>
-      {stars}
+      <Text>
+        <Rating imageSize={20} readonly startingValue={rating} />
+      </Text>
     </View>
   );
 };

@@ -23,16 +23,13 @@ const MusicList = () => {
   const [filteredMusicData, setFilteredMusicData] = useState([]);
 
   const handleSongPress = (id, rating, songUrl) => {
-    // Navigate to the MusicPlayer page and pass the song details as params
     navigation.navigate('MusicPlayer', {id, rating, songUrl});
   };
 
   const GetData = async () => {
     try {
-      // Retrieve song IDs from AsyncStorage
-      const storedSongIDs = await AsyncStorage.getItem('songIDKey');
+      const storedSongIDs = await AsyncStorage.getItem('songIds');
       const songIDs = storedSongIDs ? JSON.parse(storedSongIDs) : [];
-      console.log('Retrieved song IDs:', songIDs);
 
       const filteredData = MusicData.filter(item =>
         songIDs.includes(item.songID),
