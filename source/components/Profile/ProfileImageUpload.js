@@ -1,13 +1,11 @@
 import {
   View,
   Text,
-  Button,
   Image,
   StyleSheet,
   TextInput,
   Keyboard,
   TouchableWithoutFeedback,
-  KeyboardAvoidingView,
   ScrollView,
   useColorScheme,
 } from 'react-native';
@@ -16,12 +14,10 @@ import ImagePicker from 'react-native-image-crop-picker';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import storage from '@react-native-firebase/storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useFocusEffect} from '@react-navigation/native';
 import {
   ALERT_TYPE,
   Dialog,
   AlertNotificationRoot,
-  Toast,
 } from 'react-native-alert-notification';
 import {Light, Dark} from '../Theme/Colors';
 import NewBottomTab from '../NewBottomTab/NewBottomTab';
