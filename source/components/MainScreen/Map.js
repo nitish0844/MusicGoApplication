@@ -3,15 +3,12 @@ import {
   View,
   StyleSheet,
   StatusBar,
-  Platform,
   useColorScheme,
   ActivityIndicator,
   Text,
-  Image,
-  TouchableOpacity,
   Alert,
 } from 'react-native';
-import MapView, {Marker, Callout, Circle} from 'react-native-maps';
+import MapView, {Circle} from 'react-native-maps';
 import {check, PERMISSIONS, request, RESULTS} from 'react-native-permissions';
 import Geolocation from 'react-native-geolocation-service';
 import {DarkMapStyle} from './DarkMapStyle';
@@ -19,7 +16,6 @@ import {
   ALERT_TYPE,
   Dialog,
   AlertNotificationRoot,
-  Toast,
 } from 'react-native-alert-notification';
 import {useNavigation} from '@react-navigation/native';
 
@@ -28,7 +24,6 @@ import StarRating from '../MusicTracker/StarRating';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import haversineDistance from 'haversine-distance';
 import {getDistance} from 'geolib';
 
 const LATITUDE_DELTA = 0.0022;
@@ -75,7 +70,7 @@ const Map = () => {
       title: 'Alert',
       textBody: 'Failed to get location',
       button: 'close',
-      // autoClose: 2000,
+      autoClose: 2000,
     });
   };
 
@@ -169,19 +164,19 @@ const Map = () => {
                 },
                 {
                   text: 'Save and Play',
-                  onPress: () =>
+                  onPress: async () => {
                     navigation.navigate('MusicPlayer', {
                       id: musicItem?.id,
                       rating: musicItem?.rating,
                       songUrl: musicItem?.songUrl,
                       location: musicItem?.location,
                     }),
+                      await addItemToArray('songIds', songID);
+                  },
                 },
               ],
               {cancelable: false},
             );
-
-            await addItemToArray('songIds', songID);
           } else {
           }
         });
