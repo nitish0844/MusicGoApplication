@@ -58,21 +58,14 @@
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
       </activity>
-
         <activity
       android:name="com.zoontek.rnbootsplash.RNBootSplashActivity"
       android:theme="@style/BootTheme"
       android:launchMode="singleTask"
       android:exported="true">
-    
     </activity>
-
-  
-
       <meta-data android:name="com.google.android.geo.API_KEY" 
-        android:value="AIzaSyDRttTWmcYfZgrbkICap3KN169wny8RkQY"/>
-        
-
+        android:value="AIzaSyBDDOr5YH_yg0l3PBdFT4aC33khrAsW_j8"/>
         <uses-library android:name="org.apache.http.legacy" android:required="false"/>
     </application>
 </manifest>
