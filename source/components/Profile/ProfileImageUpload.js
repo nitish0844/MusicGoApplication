@@ -27,8 +27,6 @@ const ProfileImageUpload = ({navigation}) => {
   const [name, setName] = useState('');
   const scrollViewRef = useRef(null);
 
-  useEffect(() => {}, []);
-
   const getData = async () => {
     const res = await AsyncStorage.getItem('profileImageURL');
 
