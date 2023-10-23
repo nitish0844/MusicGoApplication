@@ -1,7 +1,6 @@
 import {View, Text, StyleSheet, Image, useColorScheme} from 'react-native';
 import React, {useState, useEffect} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {Light, Dark} from '../Theme/Colors';
 
 const PlayerCurrentLocation = ({location}) => {
@@ -12,7 +11,6 @@ const PlayerCurrentLocation = ({location}) => {
   const isDarkMode = colorScheme === 'dark';
 
   useEffect(() => {
-    // Retrieve user name from AsyncStorage
     AsyncStorage.getItem('Name')
       .then(value => {
         if (value) {

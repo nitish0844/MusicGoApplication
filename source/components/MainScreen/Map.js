@@ -29,9 +29,6 @@ import {getDistance} from 'geolib';
 const LATITUDE_DELTA = 0.0022;
 const LONGITUDE_DELTA = 0.0221;
 
-const MarkerUrl =
-  'https://firebasestorage.googleapis.com/v0/b/songtrax-e5491.appspot.com/o/png-clipart-fashion-red-headphone-music-cds-fashion-red-removebg-preview.png?alt=media&token=28482076-d067-4a01-96e5-4fcdcde9789d';
-
 const Map = () => {
   const navigation = useNavigation();
   const [region, setRegion] = useState({
@@ -40,13 +37,6 @@ const Map = () => {
     latitudeDelta: LATITUDE_DELTA,
     longitudeDelta: LONGITUDE_DELTA,
   });
-
-  const userLocation = {
-    latitude: region.latitude,
-    longitude: region.longitude,
-  };
-
-  const radius = 700; //1000 meters raduis
 
   const [loading, setLoading] = useState(true);
 
@@ -64,15 +54,15 @@ const Map = () => {
     });
   };
 
-  const locationGettingError = () => {
-    Dialog.show({
-      type: ALERT_TYPE.DANGER,
-      title: 'Alert',
-      textBody: 'Failed to get location',
-      button: 'close',
-      autoClose: 2000,
-    });
-  };
+  // const locationGettingError = () => {
+  //   Dialog.show({
+  //     type: ALERT_TYPE.DANGER,
+  //     title: 'Alert',
+  //     textBody: 'Failed to get location',
+  //     button: 'close',
+  //     autoClose: 2000,
+  //   });
+  // };
 
   const requestLocationPermission = async () => {
     try {
@@ -95,7 +85,6 @@ const Map = () => {
           error => {
             console.error(error);
             setLoading(false);
-            locationGettingError();
           },
           {enableHighAccuracy: true, timeout: 30000, maximumAge: 10000},
         );
@@ -119,7 +108,6 @@ const Map = () => {
             error => {
               console.error(error);
               setLoading(false);
-              locationGettingError();
             },
             {enableHighAccuracy: true, timeout: 30000, maximumAge: 10000},
           );
@@ -190,7 +178,6 @@ const Map = () => {
       },
       error => {
         console.error(error);
-        locationGettingError();
       },
       {enableHighAccuracy: true, timeout: 30000, maximumAge: 10000},
     );
